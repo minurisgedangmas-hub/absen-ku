@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presensi Digital Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Modern Alert styling for technical fix */
+        #permission-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            min-height: 100vh;
+            position: relative;
+            background-attachment: fixed;
+        }
+
+        .main-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            background-attachment: fixed;
+
+            <? if (initialSettings.background_url) {
+                ?>background-image: linear-gradient(to bottom, rgba(6, 78, 59, 0.8), rgba(5, 150, 105, 0.9)), url('<?= initialSettings.background_url ?>');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                <?
+            }
+
+            ?>
+        }
+
+        .main-overlay {
+            display: none;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 40px -10px rgba(6, 78, 59, 0.1);
+        }
+
+        .premium-gradient {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            /* Dark Green to Light Green */
+        }
+
+        .stat-card-glow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(6, 78, 59, 0.15);
+        }
+
+        .nav-tab-active {
+            background-color: white;
+            color: #059669;
+            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-row-hover:hover {
+            background-color: rgba(5, 150, 105, 0.05);
+            transform: scale(1.002);
+            transition: all 0.3s ease;
+        }
+
+        .mode-toggle-active {
+            background-color: white !important;
+            color: #064e3b !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Capsule Stats Styling */
+        .stat-capsule {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 64px;
+            border-radius: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            width: 100%;
+            border: 3px solid transparent;
+        }
+
+        .stat-capsule:hover {
+            transform: scale(1.02);
+            z-index: 20;
+        }
+
+        .stat-capsule .capsule-circle {
+            position: absolute;
+            width: 58px;
+            height: 58px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 3px solid white;
+            z-index: 2;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .stat-capsule.circle-right .capsule-circle {
+            right: -2px;
+        }
+
+        .stat-capsule.circle-left .capsule-circle {
+            left: -2px;
+        }
+
+        .stat-capsule .capsule-label {
+            flex: 1;
+            text-align: center;
+            font-size: 14px;
+            letter-spacing: 0.05em;
+            padding: 0 15px;
+        }
+
+        .stat-capsule.circle-right .capsule-label {
+            padding-right: 60px;
+            padding-left: 20px;
+        }
+
+        .stat-capsule.circle-left .capsule-label {
+            padding-left: 60px;
+            padding-right: 20px;
+        }
+
+        /* Specific Varian Colors from Image */
+        .stat-total {
+            background: #ffffff;
+            color: #000000;
+            border-color: #2dd4bf;
+        }
+
+        .stat-total .capsule-circle {
+            background: #2dd4bf;
+            color: #000000;
+        }
+
+        .stat-belum {
+            background: #d8b4fe;
+            color: #000000;
+            border-color: #701a75;
+        }
+
+        .stat-belum .capsule-circle {
+            background: #701a75;
+            color: #ffffff;
+        }
+
+        .stat-masuk {
+            background: #2dd4bf;
+            color: #000000;
+            border-color: #991b1b;
+        }
+
+        .stat-masuk .capsule-circle {
+            background: #991b1b;
+            color: #ffffff;
+        }
+
+        .stat-izin {
+            background: #facc15;
+            color: #000000;
+            border-color: #166534;
+        }
+
+        .stat-izin .capsule-circle {
+            background: #166534;
+            color: #ffffff;
+        }
+
+        .stat-sakit {
+            background: #ffffff;
+            color: #000000;
+            border-color: #1f2937;
+        }
+
+        .stat-sakit .capsule-circle {
+            background: #1f2937;
+            color: #ffffff;
+        }
+
+        .stat-alpha {
+            background: #14532d;
+            color: #ffffff;
+            border-color: #d1d5db;
+        }
+
+        .stat-alpha .capsule-circle {
+            background: #d1d5db;
+            color: #000000;
+        }
+
+        /* Pulang Variant - Split Box */
+        .stat-pulang-split {
+            display: flex;
+            height: 64px;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            font-weight: 800;
+        }
+
+        .stat-pulang-split .split-left {
+            background: #2dd4bf;
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border-right: 4px solid white;
+            position: relative;
+        }
+
+        .stat-pulang-split .split-left::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: -10px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid #2dd4bf;
+            border-top: 10px solid transparent;
+        }
+
+        .stat-pulang-split .split-right {
+            background: #fb923c;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: #000000;
+        }
+
+        /* Scanner Styles */
+        #reader {
+            width: 100%;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: none !important;
+        }
+
+        #reader video {
+            border-radius: 1.5rem;
+            object-fit: cover !important;
+        }
+
+        .scanner-active {
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+        }
+
+        .scan-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #10b981, transparent);
+            animation: scan 2s linear infinite;
+            z-index: 10;
+            display: none;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        .fab-scanner {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #059669 0%, #064e3b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 15px 35px -5px rgba(6, 78, 59, 0.4);
+            z-index: 50;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid white;
+        }
+
+        .fab-scanner:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 20px 45px -5px rgba(6, 78, 59, 0.5);
+        }
+
+        .fab-scanner:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+
+<body class="text-slate-900 overflow-x-hidden">
+    <!-- Top Decorative Gradient -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-800 via-green-500 to-yellow-400 z-50"></div>
+
+    <div class="main-background"></div>
+    <div class="main-overlay"></div>
+
+
+
+    <nav class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4 shadow-sm">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()"
+                    class="p-2.5 text-slate-600 hover:bg-slate-100 rounded-xl transition-all hover:scale-105 active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <div
+                    class="w-12 h-12 flex items-center justify-center overflow-hidden rounded-2xl bg-slate-50 border border-slate-100 shadow-sm">
+                    <img id="school-logo"
+                        src="<?= initialSettings.logo_url || 'https://upload.wikimedia.org/wikipedia/commons/e/ea/Logo_Kemenag.png' ?>"
+                        alt="Logo" class="w-full h-full object-contain p-1.5">
+                </div>
+                <div>
+                    <h1 class="text-xl font-black text-emerald-900 leading-tight tracking-tighter">ABSEN DIGITAL</h1>
+                    <p class="text-[10px] text-green-600 font-black uppercase tracking-[0.2em]">MI NURUL ISLAM GEDANGMAS
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex flex-col items-end">
+                    <p id="stat-time" class="text-lg font-black text-slate-900 leading-none">00:00</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Status: Online</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] opacity-0 pointer-events-none transition-opacity duration-300">
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div id="sidebar"
+        class="fixed top-0 left-0 h-full w-72 bg-white z-[70] shadow-2xl -translate-x-full transition-transform duration-300 ease-in-out p-6">
+        <div class="flex items-center gap-3 mb-10 border-b border-slate-100 pb-6">
+            <div
+                class="w-10 h-10 <?= initialSettings.logo_url ? '' : 'bg-emerald-600' ?> rounded-xl flex items-center justify-center text-white overflow-hidden">
+                <? if (initialSettings.logo_url) { ?>
+                <img src="<?= initialSettings.logo_url ?>" alt="Logo" class="w-full h-full object-contain">
+                <? } else { ?>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <? } ?>
+            </div>
+            <div>
+                <h2 class="text-lg font-black text-slate-900">Menu Beranda</h2>
+                <p class="text-xs text-slate-500 font-bold uppercase">Akses Navigasi</p>
+            </div>
+        </div>
+
+        <nav class="space-y-4">
+            <button id="tab-presensi" onclick="switchView('presensi'); toggleSidebar()"
+                class="w-full flex items-center gap-4 px-6 py-4 rounded-[2rem] bg-emerald-700 text-white shadow-xl shadow-emerald-200 transition-all font-black text-lg nav-tab-active">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Dashboard
+            </button>
+
+            <button id="tab-scanner" onclick="switchView('scanner'); toggleSidebar()"
+                class="w-full flex items-center gap-4 px-6 py-4 rounded-[2rem] text-slate-500 hover:bg-slate-100 transition-all font-black text-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                </svg>
+                Scan QR Code
+            </button>
+
+            <button id="tab-siswa" onclick="switchView('siswa'); toggleSidebar()"
+                class="w-full flex items-center gap-4 px-6 py-4 rounded-[2rem] text-slate-500 hover:bg-slate-100 transition-all font-black text-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 01-9-3.812" />
+                </svg>
+                Data Siswa
+            </button>
+
+            <button id="tab-rekap" onclick="switchView('rekap'); toggleSidebar()"
+                class="w-full flex items-center gap-4 px-6 py-4 rounded-[2rem] text-slate-500 hover:bg-slate-100 transition-all font-black text-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Laporan
+            </button>
+
+
+
+            <div class="px-6 py-4 bg-slate-50 rounded-[2rem] border border-slate-100">
+                <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">System Sync</p>
+                <div class="flex items-center gap-2">
+                    <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase">Connected to Spreadsheet</p>
+                </div>
+            </div>
+        </nav>
+
+        <div class="absolute bottom-10 left-6 right-6 space-y-3">
+            <div class="p-6 bg-slate-50 rounded-3xl border border-slate-200">
+                <p class="text-[10px] font-black uppercase text-slate-400 mb-2">Developed by</p>
+                <p class="text-xs font-black text-slate-900 tracking-tight">Mas Roni</p>
+                <p class="text-[10px] text-slate-500 font-medium">Version 2.0.5</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto p-6 lg:p-12 mb-20 relative">
+        <!-- Persistent Header Components -->
+        <!-- Header Banner removed -->
+
+        <!-- Consolidated Vertical Menu Bar for Mobile-First Eligibility -->
+        <div
+            class="glass-card p-6 md:p-10 rounded-[3.5rem] mb-12 border-emerald-100/50 shadow-2xl relative overflow-hidden">
+            <!-- Decorative Elements -->
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-yellow-400/10 rounded-full blur-3xl"></div>
+            <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl"></div>
+
+            <div class="flex flex-col gap-10 relative z-10">
+                <!-- Group 1: Main Toggle (Masuk/Pulang) -->
+                <div class="flex flex-col items-center gap-4">
+                    <p class="text-[10px] font-black text-emerald-800 uppercase tracking-[0.3em]">Mode Presensi Utama
+                    </p>
+                    <div class="bg-emerald-900/5 p-2 rounded-[2rem] flex items-center shadow-inner w-full max-w-md">
+                        <button onclick="setMode('Masuk')" id="mode-masuk"
+                            class="flex-1 py-4 px-8 rounded-[1.5rem] text-sm font-black transition-all duration-300 mode-toggle-active text-emerald-800 bg-white shadow-xl shadow-emerald-200/50">
+                            PRESENSI MASUK
+                        </button>
+                        <button onclick="setMode('Pulang')" id="mode-pulang"
+                            class="flex-1 py-4 px-8 rounded-[1.5rem] text-sm font-black transition-all duration-300 text-emerald-400 hover:text-emerald-700">
+                            PRESENSI PULANG
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Group 2: Status & Batch Actions -->
+                <div
+                    class="flex flex-col gap-8 bg-white/60 p-6 md:p-10 rounded-[3rem] border border-emerald-100 shadow-sm backdrop-blur-md">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+
+                        <!-- Step 1: Filter Kelas -->
+                        <div class="lg:col-span-4 flex flex-col gap-3">
+                            <label class="text-[10px] font-black text-emerald-800 uppercase tracking-widest ml-2">1.
+                                Pilih Rombel/Kelas</label>
+                            <div
+                                class="bg-white px-6 py-4 rounded-2xl shadow-sm border border-emerald-50 flex items-center gap-4 group focus-within:ring-4 focus-within:ring-emerald-500/10 transition-all">
+                                <div
+                                    class="w-10 h-10 bg-yellow-400 text-emerald-900 rounded-xl flex items-center justify-center text-sm font-black shadow-lg shadow-yellow-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path
+                                            d="M9 4.804A7.993 7.993 0 002 12a7.998 7.998 0 003 6.338V17a1 1 0 011-1h2a1 1 0 011 1v1h4v-1a1 1 0 011-1h2a1 1 0 011 1v.338A7.998 7.998 0 0018 12a7.993 7.993 0 00-7-7.196V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v.196H9z" />
+                                    </svg>
+                                </div>
+                                <select id="manual-class-select" onchange="updateManualStudentList()"
+                                    class="bg-transparent font-black text-emerald-900 focus:outline-none cursor-pointer text-lg w-full">
+                                    <option value="">Pilih Kelas</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Global Batch Status (Now a Dropdown) -->
+                        <div class="lg:col-span-12 xl:col-span-5 flex flex-col gap-3">
+                            <label
+                                class="text-[10px] font-black text-emerald-800 uppercase tracking-widest ml-2 text-center lg:text-left">2.
+                                Tentukan Status Masal</label>
+                            <div
+                                class="bg-white px-6 py-4 rounded-2xl shadow-sm border border-emerald-50 flex items-center gap-4 group focus-within:ring-4 focus-within:ring-emerald-500/10 transition-all">
+                                <div
+                                    class="w-10 h-10 bg-indigo-500 text-white rounded-xl flex items-center justify-center text-sm font-black shadow-lg shadow-indigo-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path
+                                            d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                        <path fill-rule="evenodd"
+                                            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <select id="bulk-status-select" onchange="applyBulkStatus(this.value)"
+                                    class="bg-transparent font-black text-emerald-900 focus:outline-none cursor-pointer text-lg w-full">
+                                    <option value="">Set Status Semua...</option>
+                                    <option value="H">HADIR (H)</option>
+                                    <option value="S">SAKIT (S)</option>
+                                    <option value="I">IZIN (I)</option>
+                                    <option value="A">ALPHA (A)</option>
+                                </select>
+                            </div>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter px-2 mt-1 italic">*
+                                Memilih ini akan mengubah status semua siswa yang tampil di bawah.</p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="lg:col-span-12 xl:col-span-3 flex justify-center">
+                            <button onclick="submitBulkManual()" id="btn-manual-submit"
+                                class="w-max px-8 py-5 premium-gradient text-white rounded-[2rem] font-black shadow-2xl shadow-emerald-900/40 hover:scale-105 hover:rotate-1 active:scale-95 transition-all disabled:opacity-50 text-sm flex flex-col items-center justify-center">
+                                <span
+                                    class="text-yellow-300 text-[10px] uppercase tracking-widest mb-1 opacity-80 leading-none">Final
+                                    Step</span>
+                                <span class="leading-none">KIRIM DATA BULK</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Area Penanda Siswa -->
+                    <div id="bulk-selection-area" class="hidden animate-slide-up border-t border-emerald-50 pt-8 mt-4">
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 px-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
+                                <h4 class="text-sm font-black text-emerald-900 uppercase tracking-widest">
+                                    Daftar Siswa Terdeteksi
+                                </h4>
+                            </div>
+                            <div
+                                class="flex gap-3 bg-emerald-50/50 p-1.5 rounded-2xl border border-emerald-100 w-full md:w-auto">
+                                <p class="text-[10px] text-slate-400 font-bold uppercase py-2 px-4 italic">Pilih status
+                                    per siswa atau gunakan menu masal di atas.</p>
+                            </div>
+                        </div>
+                        <div id="student-marker-grid"
+                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 max-h-[500px] overflow-y-auto p-4 custom-scrollbar bg-emerald-50/20 rounded-[2.5rem] border border-emerald-50/50">
+                            <!-- Student cards injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Containers -->
+        <!-- View: Presensi -->
+        <div id="view-presensi" class="view-content animate-slide-up">
+
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-3xl font-black text-white tracking-tight drop-shadow-md">Beranda</h2>
+                    <p class="text-emerald-50/80 text-sm font-medium">Dashboard Madrasah - Data<br>Absensi Satuan
+                        Pendidikan
+                    </p>
+                </div>
+                <div
+                    class="bg-white px-4 py-2 rounded-full shadow-sm border border-emerald-100 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z" />
+                    </svg>
+                    <span id="current-date" class="text-xs font-extrabold text-emerald-800">12 February 2026</span>
+                </div>
+            </div>
+
+            <!-- School Info Card -->
+            <div
+                class="premium-gradient rounded-[1.5rem] md:rounded-[3.5rem] p-4 md:p-10 mb-8 md:mb-12 text-white relative overflow-hidden shadow-2xl shadow-emerald-900/40 group border-2 md:border-4 border-yellow-400/20">
+                <div
+                    class="flex flex-col md:flex-row items-center gap-3 md:gap-8 relative z-10 text-center md:text-left">
+                    <div
+                        class="w-16 h-16 md:w-28 md:h-28 bg-white rounded-xl md:rounded-[2.5rem] flex items-center justify-center flex-shrink-0 overflow-hidden shadow-xl group-hover:scale-105 transition-transform duration-500 border-2 md:border-4 border-emerald-50 mx-auto md:mx-0">
+                        <? if (initialSettings.logo_url) { ?>
+                        <img src="<?= initialSettings.logo_url ?>" alt="Logo"
+                            class="w-full h-full object-contain p-2 md:p-3">
+                        <? } else { ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 md:h-14 md:w-14 text-emerald-700"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        <? } ?>
+                    </div>
+                    <div class="w-full overflow-hidden">
+                        <span
+                            class="hidden md:inline-block px-4 py-1.5 bg-yellow-400 text-emerald-900 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 shadow-lg">Official
+                            Dashboard</span>
+                        <h3 class="text-base md:text-4xl font-black leading-tight mb-0.5 md:mb-2 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis px-2 md:px-0"
+                            id="school-title">
+                            <?= initialSettings.org_name ?>
+                        </h3>
+                        <p
+                            class="text-emerald-50 text-[9px] md:text-lg opacity-90 font-medium tracking-tight whitespace-nowrap overflow-hidden text-ellipsis px-2 md:px-0">
+                            MADRASAH SAKTI | Santun, Aktif, Kreatif dan Islami</p>
+                    </div>
+                </div>
+                <div
+                    class="absolute -right-10 -bottom-10 w-32 h-32 md:w-64 md:h-64 bg-white/20 rounded-full blur-2xl md:blur-3xl animate-pulse">
+                </div>
+                <div
+                    class="absolute -left-10 -top-10 w-24 h-24 md:w-48 md:h-48 bg-yellow-400/20 rounded-full blur-2xl md:blur-3xl">
+                </div>
+            </div>
+
+            <!-- Stats Grid - Capsule Theme -->
+            <div class="flex flex-col gap-6 mb-12">
+                <!-- Baris 1: Total & Belum Absen -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
+                    <!-- Total Siswa -->
+                    <div class="stat-capsule circle-right stat-total">
+                        <div class="capsule-circle" id="stat-total-siswa">0</div>
+                        <div class="capsule-label">Total Siswa</div>
+                    </div>
+                    <!-- Belum Absen -->
+                    <div class="stat-capsule circle-left stat-belum">
+                        <div class="capsule-circle" id="stat-belum-absen">0</div>
+                        <div class="capsule-label">Belum Absen</div>
+                    </div>
+                </div>
+
+                <!-- Baris 2: Masuk & Izin -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
+                    <!-- Masuk -->
+                    <div class="stat-capsule circle-left stat-masuk">
+                        <div class="capsule-circle" id="stat-masuk">0</div>
+                        <div class="capsule-label">Masuk</div>
+                    </div>
+                    <!-- Izin -->
+                    <div class="stat-capsule circle-right stat-izin">
+                        <div class="capsule-circle" id="stat-izin">0</div>
+                        <div class="capsule-label">Izin</div>
+                    </div>
+                </div>
+
+                <!-- Baris 3: Sakit, Alpha, Pulang -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+                    <!-- Sakit -->
+                    <div class="stat-capsule circle-right stat-sakit">
+                        <div class="capsule-circle" id="stat-sakit">0</div>
+                        <div class="capsule-label">Sakit</div>
+                    </div>
+                    <!-- Alpha -->
+                    <div class="stat-capsule circle-left stat-alpha">
+                        <div class="capsule-circle" id="stat-alpha">0</div>
+                        <div class="capsule-label">Alpha</div>
+                    </div>
+                    <!-- Pulang (Split Box Variant) -->
+                    <div class="stat-pulang-split">
+                        <div class="split-left" id="stat-pulang">0</div>
+                        <div class="split-right">Pulang</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                </svg>
+                <h3 class="text-lg font-black text-white drop-shadow-sm">Tren Mingguan (Hadir)</h3>
+            </div>
+
+
+
+
+            <!-- History Section -->
+            <div class="lg:col-span-12">
+                <h3 class="text-2xl font-black text-white mb-8 flex items-center gap-3 drop-shadow-md">
+                    <span class="w-1.5 h-8 bg-indigo-400 rounded-full"></span>
+                    Aktivitas Terkini
+                </h3>
+                <div id="logs"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar p-1">
+                    <!-- Placeholder -->
+                    <div
+                        class="col-span-full p-12 glass-card rounded-[3rem] text-center border-dashed border-2 border-white/30">
+                        <p class="text-white/60 font-bold italic">Belum ada aktivitas hari ini</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- View: Scanner -->
+        <div id="view-scanner" class="view-content hidden animate-slide-up">
+            <div class="mb-8 flex justify-between items-end">
+                <div>
+                    <h2 class="text-3xl font-black text-white tracking-tight drop-shadow-md">Scanner QR</h2>
+                    <p class="text-emerald-50/80 text-sm font-medium italic">Arahkan kamera ke kode QR siswa</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">
+                    <p class="text-[10px] font-black text-white uppercase tracking-widest">Mode: <span
+                            id="scanner-mode-label">Masuk</span></p>
+                </div>
+            </div>
+
+            <div class="max-w-md mx-auto relative group">
+                <div
+                    class="absolute -inset-4 bg-emerald-500/20 rounded-[2.5rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="glass-card p-4 rounded-[2.5rem] relative overflow-hidden shadow-2xl">
+                    <div id="reader-container" class="relative rounded-2xl overflow-hidden bg-black">
+                        <div id="reader"></div>
+                        <div id="scan-line" class="scan-animation"></div>
+
+                        <!-- Overlay Frame -->
+                        <div class="absolute inset-0 pointer-events-none border-[40px] border-black/40"></div>
+                        <div
+                            class="absolute top-10 left-10 right-10 bottom-10 pointer-events-none border-2 border-emerald-400/50 rounded-xl shadow-[0_0_0_1000px_rgba(0,0,0,0.3)]">
+                            <div
+                                class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-emerald-400 rounded-tl-lg">
+                            </div>
+                            <div
+                                class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-400 rounded-tr-lg">
+                            </div>
+                            <div
+                                class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-400 rounded-bl-lg">
+                            </div>
+                            <div
+                                class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-emerald-400 rounded-br-lg">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex flex-col gap-4">
+                        <div class="flex gap-4">
+                            <button onclick="toggleCamera()" id="btn-toggle-camera"
+                                class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-lg flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all text-sm uppercase">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Buka Kamera
+                            </button>
+                            <button onclick="stopScanning()" id="btn-stop-camera"
+                                class="hidden flex-1 py-4 bg-rose-600 text-white rounded-2xl font-black shadow-lg flex items-center justify-center gap-2 hover:bg-rose-700 transition-all text-sm uppercase">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                Matikan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Scans in Scanner View -->
+            <div class="mt-12 max-w-md mx-auto">
+                <h3 class="text-xl font-black text-white mb-4 flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span>
+                    Hasil Scan Terakhir
+                </h3>
+                <div id="recent-scans" class="flex flex-col gap-3">
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 text-center">
+                        <p class="text-white/60 font-bold italic text-sm">Belum ada data di-scan</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Data Siswa -->
+        <div id="view-siswa" class="view-content hidden animate-slide-up">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div>
+                    <h2 class="text-4xl font-black text-white tracking-tight drop-shadow-md">Data Siswa</h2>
+                    <p class="text-white/80 mt-1 font-medium">Daftar siswa terdaftar dalam sistem.</p>
+                </div>
+                <div class="flex flex-wrap gap-4 mb-1">
+                    <div class="relative">
+                        <input type="text" id="siswa-search" onkeyup="filterSiswa()" placeholder="Cari Nama atau ID..."
+                            class="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl font-bold text-slate-900 focus:outline-none w-64 shadow-xl border-white/50 border ring-4 ring-indigo-500/10">
+                    </div>
+                    <select id="siswa-filter-kelas" onchange="filterSiswa()"
+                        class="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl font-bold text-slate-900 focus:outline-none shadow-xl border-white/50 border ring-4 ring-indigo-500/10 cursor-pointer">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-[2.5rem] overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-black/10 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                <th class="px-8 py-6">ID Siswa</th>
+                                <th class="px-8 py-6">Nama Lengkap</th>
+                                <th class="px-8 py-6">Kelas</th>
+                                <th class="px-8 py-6">No HP Orang Tua</th>
+                            </tr>
+                        </thead>
+                        <tbody id="siswa-table-body" class="text-slate-900 font-bold">
+                            <!-- Data will be loaded via JS -->
+                            <tr>
+                                <td colspan="4" class="px-8 py-10 text-center text-slate-400 italic">Memuat data...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Laporan (Renamed from Rekapan Absen) -->
+        <div id="view-rekap" class="view-content hidden animate-slide-up">
+            <div class="mb-8">
+                <h2 class="text-3xl font-black text-white tracking-tight drop-shadow-md">Laporan Kehadiran</h2>
+                <p class="text-emerald-50/80 text-sm font-medium">Rekap data absensi siswa berdasarkan periode.</p>
+            </div>
+
+            <div class="glass-card p-6 md:p-8 rounded-[3rem] mb-10 border-white/40 shadow-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-black text-emerald-800 uppercase tracking-widest ml-1">Dari
+                            Tanggal</label>
+                        <div
+                            class="bg-white/90 px-5 py-4 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                            <input type="date" id="rekap-start-date"
+                                class="bg-transparent w-full font-bold text-slate-900 outline-none cursor-pointer">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-black text-emerald-800 uppercase tracking-widest ml-1">Sampai
+                            Tanggal</label>
+                        <div
+                            class="bg-white/90 px-5 py-4 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                            <input type="date" id="rekap-end-date"
+                                class="bg-transparent w-full font-bold text-slate-900 outline-none cursor-pointer">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-black text-emerald-800 uppercase tracking-widest ml-1">Pilih
+                            Kelas</label>
+                        <div
+                            class="bg-white/90 px-5 py-4 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                            <select id="rekap-class-filter"
+                                class="bg-transparent w-full font-bold text-slate-900 outline-none cursor-pointer">
+                                <option value="">Semua Kelas</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button onclick="loadReportByRange()"
+                        class="flex-1 py-4 premium-gradient text-white rounded-2xl font-black shadow-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all text-sm uppercase tracking-wider">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        Cari Data
+                    </button>
+                    <button id="btn-export-excel" onclick="downloadExcel()"
+                        class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all text-sm uppercase tracking-wider">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Export Excel
+                    </button>
+                </div>
+            </div>
+
+            <div id="rekap-container"
+                class="glass-card rounded-[3.5rem] overflow-hidden min-h-[400px] flex flex-col items-center justify-center p-12 border-white/50 bg-white/40">
+                <div id="rekap-empty-state" class="flex flex-col items-center text-center">
+                    <div
+                        class="w-32 h-32 bg-indigo-50/50 rounded-full flex items-center justify-center mb-8 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-400 opacity-60" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-emerald-900 mb-3">Menunggu Filter</h3>
+                    <p class="text-slate-500 font-medium max-w-sm text-sm">Silakan pilih rentang tanggal mulai dan
+                        akhir, lalu klik tombol Cari Data.</p>
+                </div>
+
+                <div id="rekap-table-wrapper" class="hidden w-full overflow-x-auto custom-scrollbar">
+                    <div class="flex items-center justify-between mb-6 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-6 bg-yellow-400 rounded-full"></div>
+                            <h4 class="text-sm font-black text-emerald-900 uppercase tracking-widest">Hasil Laporan
+                                Kehadiran</h4>
+                        </div>
+                    </div>
+                    <table class="w-full text-left border-separate border-spacing-y-2">
+                        <thead>
+                            <tr class="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                <th class="px-6 py-4">Nama Siswa</th>
+                                <th class="px-6 py-4">Hadir</th>
+                                <th class="px-6 py-4">Telat</th>
+                                <th class="px-6 py-4">Sakit</th>
+                                <th class="px-6 py-4">Izin</th>
+                                <th class="px-6 py-4">Alpha</th>
+                                <th class="px-6 py-4">Efektif</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rekap-table-body" class="text-slate-900 font-bold text-sm">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Notifications -->
+    <!-- Floating Action Button for Scanner -->
+    <div onclick="switchView('scanner')" class="fab-scanner animate-bounce-slow" title="Scan QR Code">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+        </svg>
+    </div>
+
+    <div id="toast-container"
+        class="fixed bottom-10 inset-x-0 flex flex-col items-center gap-3 z-50 pointer-events-none px-6"></div>
+
+    <!-- Marquee Footer -->
+    <footer class="fixed bottom-0 left-0 w-full bg-slate-900 text-white py-3 overflow-hidden z-50">
+        <div class="whitespace-nowrap flex marquee-container">
+            <p id="footer-marquee" class="text-sm font-bold px-10 tracking-wide uppercase opacity-90">
+                <?= initialSettings.footer_text ?>
+            </p>
+            <p class="text-sm font-bold px-10 tracking-wide uppercase opacity-90">
+                <?= initialSettings.footer_text ?>
+            </p>
+            <p class="text-sm font-bold px-10 tracking-wide uppercase opacity-90">
+                <?= initialSettings.footer_text ?>
+            </p>
+            <p class="text-sm font-bold px-10 tracking-wide uppercase opacity-90">
+                <?= initialSettings.footer_text ?>
+            </p>
+        </div>
+    </footer>
+
+    <style>
+        .marquee-container {
+            animation: marquee 30s linear infinite;
+            display: flex;
+            width: max-content;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+
+    <script>
+        let currentMode = 'Masuk';
+        const appSettings = JSON.parse('<?= JSON.stringify(initialSettings) ?>');
+        let html5QrCode;
+        let scannerIsRunning = false;
+        let lastScannedId = "";
+        let scanCooldown = false;
+
+        function setMode(mode) {
+            currentMode = mode;
+            const btnMasuk = document.getElementById('mode-masuk');
+            const btnPulang = document.getElementById('mode-pulang');
+
+            if (mode === 'Masuk') {
+                btnMasuk.className = "flex-1 py-4 px-8 rounded-[1.5rem] text-sm font-black transition-all duration-300 mode-toggle-active text-emerald-800 bg-white shadow-xl shadow-emerald-200/50";
+                btnPulang.className = "flex-1 py-4 px-8 rounded-[1.5rem] text-sm font-black transition-all duration-300 text-emerald-400 hover:text-emerald-700";
+            } else {
+                btnPulang.className = "flex-1 py-4 px-8 rounded-[1.5rem] text-sm font-black transition-all duration-300 mode-toggle-active text-emerald-800 bg-white shadow-xl shadow-emerald-200/50";
+                btnMasuk.className = "flex-1 py-4 px-8 rounded-[1.5rem] text-sm font-black transition-all duration-300 text-emerald-400 hover:text-emerald-700";
+            }
+            showToast(`Mode Presensi: ${mode}`, 'info');
+
+            // Re-render manual list to apply locking logic for the new mode
+            if (document.getElementById('manual-class-select').value) {
+                updateManualStudentList();
+            }
+        }
+
+        const logsContainer = document.getElementById('logs');
+        const statTime = document.getElementById('stat-time');
+
+
+        // View Switching
+        function switchView(view) {
+            const views = ['presensi', 'siswa', 'rekap'];
+            views.forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                const tab = document.getElementById(`tab-${v}`);
+
+                if (el) el.classList.add('hidden');
+                if (tab) {
+                    tab.classList.remove('nav-tab-active', 'bg-emerald-700', 'text-white', 'shadow-xl', 'shadow-emerald-200');
+                    tab.classList.add('text-slate-500');
+                }
+            });
+
+            const activeEl = document.getElementById(`view-${view}`);
+            const activeTab = document.getElementById(`tab-${view}`);
+
+            if (activeEl) activeEl.classList.remove('hidden');
+            if (activeTab) {
+                activeTab.classList.add('nav-tab-active', 'bg-emerald-700', 'text-white', 'shadow-xl', 'shadow-emerald-200');
+                activeTab.classList.remove('text-slate-500');
+            }
+
+
+            if (view === 'siswa') loadStudentsData();
+
+            // Stop scanner if leaving scanner view
+            if (view !== 'scanner' && scannerIsRunning) {
+                stopScanning();
+            }
+        }
+
+
+        let allStudentsData = [];
+        let studentHeaders = [];
+
+        function loadStudentsData() {
+            const tbody = document.getElementById('siswa-table-body');
+            const classFilter = document.getElementById('siswa-filter-kelas');
+            const manualClassSelect = document.getElementById('manual-class-select');
+
+            if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="px-8 py-10 text-center text-slate-400 italic">Memuat data...</td></tr>';
+
+            google.script.run.withSuccessHandler(response => {
+                allStudentsData = response.data || [];
+                studentHeaders = response.headers || [];
+
+                // 1. Get Class List (Priority: appSettings, Fallback: Extract from Data)
+                let classList = appSettings.classes || [];
+
+                if (classList.length === 0 && allStudentsData.length > 0) {
+                    const classIdx = studentHeaders.findIndex(h => {
+                        const low = h.toLowerCase();
+                        return low.includes('kelas') || low.includes('kls') || low.includes('rombel') || low.includes('tingkat');
+                    });
+                    if (classIdx >= 0) {
+                        const uniqueClasses = [...new Set(allStudentsData.map(s => s._raw[classIdx]))].filter(Boolean);
+                        classList = uniqueClasses.sort();
+                    }
+                }
+
+                // 2. Populate Siswa Filter
+                if (classFilter) {
+                    classFilter.innerHTML = '<option value="">Semua Kelas</option>';
+                    const rekapClassFilter = document.getElementById('rekap-class-filter');
+                    if (rekapClassFilter) rekapClassFilter.innerHTML = '<option value="">Semua Kelas</option>';
+
+                    classList.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c;
+                        opt.textContent = c;
+                        classFilter.appendChild(opt);
+
+                        if (rekapClassFilter) {
+                            const opt2 = document.createElement('option');
+                            opt2.value = c;
+                            opt2.textContent = c;
+                            rekapClassFilter.appendChild(opt2);
+                        }
+                    });
+                }
+
+                // 3. Populate Manual Class Select
+                if (manualClassSelect) {
+                    // Reset except first option
+                    manualClassSelect.innerHTML = '<option value="">Pilih Kelas</option>';
+                    classList.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c;
+                        opt.textContent = c;
+                        manualClassSelect.appendChild(opt);
+                    });
+                }
+
+                if (tbody) renderStudents(allStudentsData);
+
+            }).withFailureHandler(err => {
+                console.error('Failed to load students:', err);
+                if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="px-8 py-10 text-center text-rose-500 font-bold">Gagal memuat data.</td></tr>';
+            }).getStudentsData();
+        }
+
+        function updateManualStudentList() {
+            const classVal = document.getElementById('manual-class-select').value;
+            const markerGrid = document.getElementById('student-marker-grid');
+            const selectionArea = document.getElementById('bulk-selection-area');
+
+            markerGrid.innerHTML = '';
+
+            if (!classVal || allStudentsData.length === 0) {
+                selectionArea.classList.add('hidden');
+                return;
+            }
+
+            markerGrid.innerHTML = '<div class="col-span-full py-10 text-center text-slate-400 italic">Mengecek data kehadiran...</div>';
+            selectionArea.classList.remove('hidden');
+
+            // Fetch today's attendance to lock students
+            google.script.run.withSuccessHandler(todayAttendance => {
+                markerGrid.innerHTML = '';
+
+                const classIdx = studentHeaders.findIndex(h => {
+                    const low = h.toLowerCase();
+                    return low.includes('kelas') || low.includes('kls') || low.includes('rombel') || low.includes('tingkat');
+                });
+                const nameIdx = studentHeaders.findIndex(h => h.toLowerCase().includes('nama'));
+                const finalNameIdx = nameIdx >= 0 ? nameIdx : 1;
+                const idIdx = studentHeaders.findIndex(h => h.toLowerCase().includes('id') || h.toLowerCase().includes('nis'));
+                const finalIdIdx = idIdx >= 0 ? idIdx : 0;
+
+                const filtered = allStudentsData.filter(s => {
+                    const studentClass = (classIdx >= 0 ? s._raw[classIdx] : s.class);
+                    return studentClass === classVal;
+                });
+
+                if (filtered.length === 0) {
+                    markerGrid.innerHTML = '<div class="col-span-full py-10 text-center text-slate-400 italic">Tidak ada siswa di kelas ini.</div>';
+                    return;
+                }
+
+                filtered.sort((a, b) => {
+                    const nameA = (a._raw[finalNameIdx] || "").toString();
+                    const nameB = (b._raw[finalNameIdx] || "").toString();
+                    return nameA.localeCompare(nameB);
+                }).forEach(s => {
+                    const sId = s._raw[finalIdIdx].toString();
+                    const sName = s._raw[finalNameIdx];
+
+                    const attRecord = todayAttendance[sId] || { masuk: false, pulang: false, status: '' };
+
+                    // Lock if in Pulang mode and student has manual status (S/I/A)
+                    let isLocked = false;
+                    if (currentMode === 'Pulang' && attRecord.status) {
+                        isLocked = true;
+                    }
+
+                    const statusBadge = attRecord.status ?
+                        `<span class="ml-2 px-2 py-0.5 bg-rose-50 text-rose-600 text-[8px] rounded-md font-black uppercase">${attRecord.status}</span>` : '';
+
+                    const card = document.createElement('div');
+                    card.className = "select-none";
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between gap-4 p-4 rounded-2xl ${isLocked ? 'bg-slate-50 border-slate-100 opacity-60 grayscale' : 'bg-white border-emerald-100 shadow-sm hover:border-emerald-500 hover:shadow-md'} transition-all group">
+                            <div class="flex flex-col flex-1">
+                                <span class="text-[10px] font-black font-mono ${isLocked ? 'text-slate-400' : 'text-emerald-600'} uppercase tracking-tighter">
+                                    ${sId} ${attRecord.masuk ? '• M' : ''} ${attRecord.pulang ? '• P' : ''} ${isLocked ? '• LOCKED' : ''}
+                                </span>
+                                <div class="flex items-center">
+                                    <span class="text-sm font-bold ${isLocked ? 'text-slate-500' : 'text-emerald-900'} leading-tight group-hover:text-emerald-700 transition-colors truncate max-w-[150px]">${sName}</span>
+                                    ${statusBadge}
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <select name="bulk-student-status" data-student-id="${sId}" ${isLocked ? 'disabled' : ''}
+                                    class="text-xs font-black rounded-lg border-2 border-slate-100 p-2 focus:ring-2 focus:ring-emerald-500 outline-none transition-all cursor-pointer bg-slate-50 disabled:bg-slate-100 disabled:cursor-not-allowed">
+                                    <option value="">--</option>
+                                    <option value="H">H</option>
+                                    <option value="S">S</option>
+                                    <option value="I">I</option>
+                                    <option value="A">A</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                    markerGrid.appendChild(card);
+                });
+            }).getTodayAttendance();
+        }
+
+        function applyBulkStatus(status) {
+            if (!status) return;
+            document.querySelectorAll('select[name="bulk-student-status"]:not(:disabled)').forEach(sel => {
+                sel.value = status;
+            });
+            showToast(`Status diset ke ${status} untuk semua`, 'info');
+        }
+
+        function submitBulkManual() {
+            const statusMap = {};
+            document.querySelectorAll('select[name="bulk-student-status"]').forEach(sel => {
+                const val = sel.value;
+                const id = sel.getAttribute('data-student-id');
+                if (val && !sel.disabled) {
+                    statusMap[id] = val;
+                }
+            });
+
+            const btnSubmit = document.getElementById('btn-manual-submit');
+            const totalToProcess = Object.keys(statusMap).length;
+
+            if (totalToProcess === 0) {
+                showToast('Pilih setidaknya satu status siswa', 'error');
+                return;
+            }
+
+            // Tambahkan dialog konfirmasi
+            const isConfirmed = confirm(`Yakin ingin mengirim absensi untuk ${totalToProcess} siswa?`);
+            if (!isConfirmed) return;
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `
+                 <span class="text-yellow-300 text-[10px] uppercase tracking-widest mb-1 opacity-80 animate-pulse">Processing</span>
+                 <span class="leading-none">MOHON TUNGGU...</span>
+            `;
+
+            showToast(`Memproses ${totalToProcess} data...`, 'info');
+            google.script.run.withSuccessHandler(response => {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = `
+                    <span class="text-yellow-300 text-[10px] uppercase tracking-widest mb-1 opacity-80 leading-none">Final Step</span>
+                    <span class="leading-none">KIRIM DATA BULK</span>
+                `;
+
+                if (response.success) {
+                    showToast(`Berhasil: ${response.count} Absensi Tercatat`, 'success');
+                    // Refresh the list to apply locking
+                    updateManualStudentList();
+                    // Clear bulk select
+                    document.getElementById('bulk-status-select').value = '';
+                    refreshStats();
+                } else {
+                    showToast(response.message || 'Gagal menyimpan data', 'error');
+                }
+            }).withFailureHandler(err => {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = `
+                    <span class="text-yellow-300 text-[10px] uppercase tracking-widest mb-1 opacity-80 leading-none">Final Step</span>
+                    <span class="leading-none">KIRIM DATA BULK</span>
+                `;
+                showToast('Kesalahan Server!', 'error');
+            }).submitBulkAttendance(statusMap, currentMode);
+        }
+
+        function filterSiswa() {
+            const query = document.getElementById('siswa-search').value.toLowerCase();
+            const classFilter = document.getElementById('siswa-filter-kelas').value;
+
+            const classIdx = studentHeaders.findIndex(h => h.toLowerCase().includes('kelas'));
+            const nameIdx = studentHeaders.findIndex(h => h.toLowerCase().includes('nama'));
+            const finalNameIdx = nameIdx >= 0 ? nameIdx : 1;
+            const idIdx = studentHeaders.findIndex(h => h.toLowerCase().includes('id') || h.toLowerCase().includes('nis'));
+            const finalIdIdx = idIdx >= 0 ? idIdx : 0;
+
+            const filtered = allStudentsData.filter(s => {
+                const studentClass = (classIdx >= 0 ? s._raw[classIdx] : s.class);
+                const sName = (s._raw[finalNameIdx] || "").toString().toLowerCase();
+                const sId = (s._raw[finalIdIdx] || "").toString().toLowerCase();
+
+                const matchQuery = sName.includes(query) || sId.includes(query);
+                const matchClass = classFilter === '' || studentClass === classFilter;
+                return matchQuery && matchClass;
+            });
+
+            renderStudents(filtered);
+        }
+
+        function renderStudents(students) {
+            const tbody = document.getElementById('siswa-table-body');
+            const thead = tbody.closest('table').querySelector('thead');
+
+            // Dynamic Header
+            if (studentHeaders.length > 0) {
+                thead.innerHTML = `
+                    <tr class="bg-black/10 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                        ${studentHeaders.map(h => `<th class="px-8 py-6">${h}</th>`).join('')}
+                    </tr>
+                `;
+            }
+
+            if (!students || students.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${studentHeaders.length || 4}" class="px-8 py-10 text-center text-slate-400 italic">Tidak ada data siswa ditemukan.</td></tr>`;
+                return;
+            }
+
+            // Find Class Index (usually index 2, but let's be safe)
+            const classIdx = studentHeaders.findIndex(h => {
+                const low = h.toLowerCase();
+                return low.includes('kelas') || low.includes('kls') || low.includes('rombel') || low.includes('tingkat');
+            });
+
+            // Group by class if we found a class column
+            const grouped = students.reduce((acc, s) => {
+                const cls = (classIdx >= 0 ? s._raw[classIdx] : null) || 'Data Siswa';
+                if (!acc[cls]) acc[cls] = [];
+                acc[cls].push(s);
+                return acc;
+            }, {});
+
+            let html = '';
+            Object.keys(grouped).sort((a, b) => {
+                return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+            }).forEach(className => {
+                html += `
+                    <tr class="bg-slate-100/80">
+                        <td colspan="${studentHeaders.length}" class="px-8 py-3 text-[11px] font-black text-slate-600 uppercase tracking-[0.2em] border-y border-slate-200 shadow-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                                ${className} <span class="ml-2 font-bold text-emerald-600 opacity-40">(${grouped[className].length} Data)</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                html += grouped[className].map(s => `
+                    <tr class="border-t border-slate-50 table-row-hover">
+                        ${s._raw.map((val, idx) => `
+                            <td class="px-8 py-5 ${idx === 0 ? 'text-emerald-700 font-black' : 'text-emerald-900/80 font-medium'}">
+                                ${idx === classIdx ? `<span class="px-3 py-1 bg-white border border-emerald-100 rounded-lg shadow-sm text-[10px] uppercase font-bold text-emerald-600">${val}</span>` : val}
+                            </td>
+                        `).join('')}
+                    </tr>
+                `).join('');
+            });
+            tbody.innerHTML = html;
+        }
+
+        function loadReportByRange() {
+            const startDate = document.getElementById('rekap-start-date').value;
+            const endDate = document.getElementById('rekap-end-date').value;
+            const classFilter = document.getElementById('rekap-class-filter').value;
+            const tbody = document.getElementById('rekap-table-body');
+            const emptyState = document.getElementById('rekap-empty-state');
+            const tableWrapper = document.getElementById('rekap-table-wrapper');
+
+            if (!startDate || !endDate) {
+                showToast('Pilih rentang tanggal terlebih dahulu', 'info');
+                return;
+            }
+
+            tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-slate-400 italic"><div class="flex flex-col items-center gap-3"><div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>Menganalisis data...</div></td></tr>';
+            emptyState.classList.add('hidden');
+            tableWrapper.classList.remove('hidden');
+
+            google.script.run.withSuccessHandler(response => {
+                let data = response.recap;
+
+                // Client-side filter for class on list view if needed (though backend handles it for excel, 
+                // we should handle it here for consistency in 'Cari Data')
+                if (classFilter) {
+                    data = data.filter(r => r.class === classFilter);
+                }
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-slate-400 italic text-sm">Tidak ada rekapan untuk kriteria tersebut.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.map(r => `
+                    <tr class="bg-white border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                        <td class="px-6 py-5">
+                            <div class="font-black text-slate-800">${r.name}</div>
+                            <div class="text-[9px] text-slate-400 uppercase font-bold tracking-widest mt-0.5">${r.class}</div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-lg font-black text-[10px] shadow-sm">${r.hadir}</span>
+                        </td>
+                        <td class="px-6 py-5"><span class="text-amber-600 font-black">${r.telat}</span></td>
+                        <td class="px-6 py-5"><span class="text-rose-600 font-black">${r.sakit}</span></td>
+                        <td class="px-6 py-5"><span class="text-indigo-600 font-black">${r.izin}</span></td>
+                        <td class="px-6 py-5"><span class="text-slate-400 font-black text-opacity-50">${r.alpha}</span></td>
+                        <td class="px-6 py-5 font-black text-slate-900 border-l border-slate-50 text-center">${r.totalEffective}</td>
+                    </tr>
+                `).join('');
+            })
+                .withFailureHandler(err => {
+                    tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-rose-500 font-bold">Gagal menganalisis data.</td></tr>';
+                    showToast('Kesalahan server saat memuat laporan', 'error');
+                }).getAttendanceReportByRange(startDate, endDate);
+        }
+
+        function downloadExcel() {
+            const startDate = document.getElementById('rekap-start-date').value;
+            const classFilter = document.getElementById('rekap-class-filter').value;
+            const btn = document.getElementById('btn-export-excel');
+
+            if (!startDate) {
+                showToast('Pilih Tanggal Mulai terlebuh dahulu', 'error');
+                return;
+            }
+
+            // Processing Date
+            const date = new Date(startDate);
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>';
+            showToast(`Menyiapkan file Excel ${classFilter || 'Semua Kelas'}...`, 'info');
+
+            google.script.run.withSuccessHandler(response => {
+                if (response.success) {
+                    google.script.run.withSuccessHandler(url => {
+                        btn.disabled = false;
+                        btn.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Export Excel
+                        `;
+                        if (url) {
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = response.sheetName + '.xlsx';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            showToast('Download dimulai', 'success');
+                        } else {
+                            showToast('Gagal mendapatkan link download', 'error');
+                        }
+                    }).getDownloadUrl(response.sheetName);
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Export Excel';
+                    showToast(response.message || 'Gagal membuat laporan', 'error');
+                }
+            }).withFailureHandler(err => {
+                btn.disabled = false;
+                btn.innerHTML = 'Export Excel';
+                showToast('Kesalahan Server!', 'error');
+            }).generateDailyMatrixReport(month, year, classFilter);
+        }
+
+        function generateMatrixReportManual() {
+            // No longer used
+        }
+
+        function loadAttendanceRecap() {
+            // Redirection for compatibility
+            loadReportByRange();
+        }
+
+        // Sidebar Logic
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isOpen = sidebar.classList.contains('translate-x-0');
+
+            if (isOpen) {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                sidebar.classList.add('translate-x-0');
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            if (document.getElementById('stat-time')) {
+                document.getElementById('stat-time').textContent = now.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit' });
+            }
+        }, 1000);
+
+        function refreshStats() {
+            google.script.run.withSuccessHandler(stats => {
+                document.getElementById('stat-total-siswa').textContent = stats.totalSiswa || 0;
+                document.getElementById('stat-belum-absen').textContent = stats.belumAbsen || 0;
+                document.getElementById('stat-masuk').textContent = stats.masuk || 0;
+                document.getElementById('stat-izin').textContent = stats.izin || 0;
+                document.getElementById('stat-sakit').textContent = stats.sakit || 0;
+                document.getElementById('stat-alpha').textContent = stats.alpha || 0;
+                document.getElementById('stat-pulang').textContent = stats.pulang || 0;
+            }).getDashboardStats();
+
+            // Update Date
+            const now = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-GB', options);
+        }
+
+
+
+        function addLog(name, time, type, status) {
+            const emptyState = logsContainer.querySelector('.border-dashed');
+            if (emptyState) emptyState.remove();
+
+            const isMasuk = type === 'Masuk';
+            const statusStyles = {
+                'Hadir': isMasuk ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-yellow-50 text-emerald-800 border-yellow-100',
+                'Terlambat': 'bg-rose-50 text-rose-600 border-rose-100',
+                'Pulang Awal': 'bg-rose-50 text-rose-600 border-rose-100'
+            };
+            const currentStyle = statusStyles[status] || 'bg-slate-50 text-slate-600 border-slate-100';
+
+            const entry = document.createElement('div');
+            entry.className = 'group p-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500 animate-slide-in flex justify-between items-center';
+            entry.innerHTML = `
+                <div class="flex items-center gap-5">
+                    <div class="w-14 h-14 ${isMasuk ? 'premium-gradient text-white' : 'bg-rose-500 text-white'} rounded-2xl flex items-center justify-center font-black text-xl shadow-lg shadow-emerald-200/50 group-hover:scale-110 transition-transform duration-500">
+                        ${name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <p class="font-black text-slate-900 text-lg tracking-tight">${name}</p>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Terekam ${time}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end gap-2">
+                    <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${currentStyle}">
+                        ${status}
+                    </span>
+                    <span class="text-[9px] font-black text-emerald-300 uppercase tracking-[0.2em] group-hover:text-emerald-500 transition-colors">
+                        SISTEM: ${type.toUpperCase()}
+                    </span>
+                </div>
+            `;
+            logsContainer.prepend(entry);
+        }
+
+        function showToast(message, type) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            const styles = {
+                'success': 'bg-slate-900 text-emerald-400 border-l-4 border-emerald-400',
+                'error': 'bg-slate-900 text-rose-400 border-l-4 border-rose-400',
+                'info': 'bg-slate-900 text-indigo-400 border-l-4 border-indigo-400'
+            }[type];
+
+            toast.className = `${styles} px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-slide-up pointer-events-auto transition-all duration-300`;
+            toast.innerHTML = `<span class="font-bold text-sm tracking-wide text-white">${message}</span>`;
+
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 400);
+            }, 3500);
+        }
+
+        // --- SCANNER LOGIC ---
+        function toggleCamera() {
+            if (scannerIsRunning) {
+                stopScanning();
+            } else {
+                startScanning();
+            }
+        }
+
+        async function startScanning() {
+            const btnToggle = document.getElementById('btn-toggle-camera');
+            const btnStop = document.getElementById('btn-stop-camera');
+            const reader = document.getElementById('reader');
+            const scanLine = document.getElementById('scan-line');
+
+            btnToggle.disabled = true;
+            btnToggle.innerHTML = '<span class="animate-pulse">Menghubungkan...</span>';
+
+            document.getElementById('scanner-mode-label').textContent = currentMode;
+
+            try {
+                // Initialize scanner if not exists
+                if (!html5QrCode) {
+                    html5QrCode = new Html5Qrcode("reader");
+                }
+
+                const config = {
+                    fps: 15,
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0
+                };
+
+                await html5QrCode.start(
+                    { facingMode: "environment" },
+                    config,
+                    onScanSuccess
+                );
+
+                scannerIsRunning = true;
+                btnToggle.classList.add('hidden');
+                btnStop.classList.remove('hidden');
+                reader.classList.add('scanner-active');
+                if (scanLine) scanLine.style.display = 'block';
+
+                showToast('Kamera Aktif', 'info');
+
+            } catch (err) {
+                console.error("Camera Error:", err);
+                showToast('Gagal akses kamera. Pastikan izin diberikan.', 'error');
+                btnToggle.disabled = false;
+                btnToggle.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Buka Kamera
+                `;
+            }
+        }
+
+        async function stopScanning() {
+            const btnToggle = document.getElementById('btn-toggle-camera');
+            const btnStop = document.getElementById('btn-stop-camera');
+            const reader = document.getElementById('reader');
+            const scanLine = document.getElementById('scan-line');
+
+            if (html5QrCode && scannerIsRunning) {
+                try {
+                    await html5QrCode.stop();
+                    scannerIsRunning = false;
+                    btnToggle.classList.remove('hidden');
+                    btnToggle.disabled = false;
+                    btnToggle.innerHTML = `
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Buka Kamera
+                    `;
+                    btnStop.classList.add('hidden');
+                    reader.classList.remove('scanner-active');
+                    if (scanLine) scanLine.style.display = 'none';
+                    showToast('Kamera Dimatikan', 'info');
+                } catch (err) {
+                    console.error("Stop Error:", err);
+                }
+            }
+        }
+
+        function onScanSuccess(decodedText) {
+            if (scanCooldown) return;
+
+            // Basic sound effect if possible
+            try {
+                const audio = new Audio('https://www.soundjay.com/buttons/beep-07a.mp3');
+                audio.play();
+            } catch (e) { }
+
+            scanCooldown = true;
+            setTimeout(() => { scanCooldown = false; }, 3000); // 3 seconds cooldown per scan
+
+            const studentId = decodedText.trim();
+            showToast(`Mendatabase: ${studentId}...`, 'info');
+
+            google.script.run.withSuccessHandler(response => {
+                if (response.success) {
+                    addRecentScan(response);
+                    showToast(`SUKSES: ${response.name} (${response.status})`, 'success');
+                    refreshStats();
+                } else {
+                    showToast(response.message || 'Gagal', 'error');
+                }
+            }).withFailureHandler(err => {
+                showToast('Koneksi Gagal', 'error');
+                console.error(err);
+            }).processAttendance(studentId, currentMode);
+        }
+
+        function addRecentScan(res) {
+            const container = document.getElementById('recent-scans');
+            const empty = container.querySelector('.bg-white\\/10');
+            if (empty) empty.remove();
+
+            const isMasuk = res.type === 'Masuk';
+            const card = document.createElement('div');
+            card.className = "p-4 bg-white rounded-2xl shadow-lg border border-emerald-100 flex items-center gap-4 animate-slide-in";
+            card.innerHTML = `
+                <div class="w-12 h-12 ${isMasuk ? 'bg-emerald-500' : 'bg-rose-500'} text-white rounded-xl flex items-center justify-center font-black">
+                    ${res.name.charAt(0).toUpperCase()}
+                </div>
+                <div class="flex-1">
+                    <p class="font-bold text-slate-800 leading-tight">${res.name}</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">${res.time} • ${res.status}</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-[9px] font-black text-emerald-500 uppercase">${res.type}</span>
+                </div>
+            `;
+
+            container.prepend(card);
+
+            // Limit to 5 recent scans
+            if (container.children.length > 5) {
+                container.lastElementChild.remove();
+            }
+
+            // Also add to dashboard logs if visible
+            addLog(res.name, res.time, res.type, res.status);
+        }
+
+        let currentMatrixSheet = '';
+
+        // Deprecated old functions
+        function generateMatrixReport() { }
+
+        let selectedManualStatus = '';
+
+        function setManualStatus(status) {
+            selectedManualStatus = status;
+            const buttons = {
+                'H': 'btn-manual-h',
+                'S': 'btn-manual-s',
+                'I': 'btn-manual-i',
+                'A': 'btn-manual-a'
+            };
+
+            // Reset all buttons
+            const activeClasses = {
+                'H': 'border-emerald-500 text-emerald-600',
+                'S': 'border-amber-500 text-amber-600',
+                'I': 'border-sky-500 text-sky-600',
+                'A': 'border-rose-500 text-rose-600'
+            };
+
+            Object.keys(buttons).forEach(key => {
+                const btn = document.getElementById(buttons[key]);
+                if (btn) {
+                    btn.classList.remove('border-emerald-500', 'text-emerald-600', 'border-amber-500', 'text-amber-600', 'border-sky-500', 'text-sky-600', 'border-rose-500', 'text-rose-600');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+
+            // Highlight selected
+            const activeBtn = document.getElementById(buttons[status]);
+            if (activeBtn) {
+                const classesToAdd = activeClasses[status].split(' ');
+                activeBtn.classList.add(...classesToAdd);
+                activeBtn.classList.remove('text-slate-400');
+            }
+
+            const statusNames = { 'H': 'Hadir', 'S': 'Sakit', 'I': 'Izin', 'A': 'Alpha' };
+            showToast(`Pilih Status: ${statusNames[status]}`, 'info');
+        }
+
+        function submitManual() {
+            const studentId = document.getElementById('manual-student-id').value.trim();
+            const btnSubmit = document.getElementById('btn-manual-submit');
+
+            if (!studentId) {
+                showToast('Masukkan ID Siswa', 'error');
+                return;
+            }
+
+            if (!selectedManualStatus) {
+                showToast('Pilih status (H/S/I/A)', 'error');
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                Processing...
+            `;
+
+            google.script.run.withSuccessHandler(response => {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = 'Submit';
+
+                if (response.success) {
+                    if (response.alreadyRecorded) {
+                        showToast(`${response.name} sudah absen ${response.status} hari ini.`, 'info');
+                    } else {
+                        showToast(`Sukses: ${response.name} (${response.status})`, 'success');
+                        if (response.waStatus && response.waStatus.startsWith('Sent')) {
+                            showToast('Notifikasi WA Terkirim', 'success');
+                        } else if (response.waStatus) {
+                            showToast('WA: ' + response.waStatus, 'info');
+                        }
+                    }
+                    // Reset fields
+                    if (document.getElementById('manual-student-id')) {
+                        document.getElementById('manual-student-id').value = '';
+                    }
+                    selectedManualStatus = '';
+                    ['btn-manual-h', 'btn-manual-s', 'btn-manual-i', 'btn-manual-a'].forEach(id => {
+                        const btn = document.getElementById(id);
+                        if (btn) {
+                            btn.classList.remove('border-emerald-500', 'text-emerald-600', 'border-amber-500', 'text-amber-600', 'border-sky-500', 'text-sky-600', 'border-rose-500', 'text-rose-600');
+                            btn.classList.add('text-slate-400');
+                        }
+                    });
+                    refreshStats();
+                } else {
+                    showToast(response.message || 'Gagal menyimpan data', 'error');
+                }
+            }).withFailureHandler(err => {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = 'Submit';
+                showToast('Kesalahan Server!', 'error');
+            }).submitManualAttendance(studentId, selectedManualStatus, currentMode);
+        }
+
+        window.onload = () => {
+            refreshStats();
+            loadStudentsData(); // Load student mapping for manual attendance
+            // Auto-sync stats every 30 seconds
+            setInterval(refreshStats, 30000);
+        };
+    </script>
+
+    <style>
+        @keyframes bounce-slow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 3s ease-in-out infinite;
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-in {
+            animation: slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-slide-up {
+            animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-10px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(10px);
+            }
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+    </style>
+</body>
+
+</html>
